@@ -1,0 +1,342 @@
+<!-- Features Hero -->
+<section class="pt-20 pb-16 velocity-bg-primary">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 gradient-text">Powerful Features</h1>
+            <p class="text-xl velocity-text-secondary max-w-3xl mx-auto">
+                Discover everything VelocityJS offers to make your web development experience faster, easier, and more enjoyable.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features -->
+<section class="py-16 velocity-bg-secondary">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl font-bold mb-6 text-center gradient-text">Core Framework Features</h2>
+            <p class="text-lg velocity-text-secondary text-center max-w-3xl mx-auto">
+                Built-in capabilities that provide a solid foundation for modern web applications.
+            </p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-12">
+            <!-- HTML Page Fetching -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">📄</div>
+                    <h3 class="text-2xl font-bold">HTML Page Fetching</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Load HTML pages dynamically with AJAX, just like Next.js. Organize your content in separate files and load them seamlessly.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white">app.<span class="text-yellow-400">route</span>(<span class="text-green-400">'/about'</span>, {</div>
+                    <div class="text-white ml-4">fetchHtml: <span class="text-orange-400">true</span>,</div>
+                    <div class="text-white ml-4">template: <span class="text-green-400">'pages/about.html'</span></div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+            
+            <!-- Layout System -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">🏗️</div>
+                    <h3 class="text-2xl font-bold">Layout System</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Nested layouts with content injection. Define consistent page structures and reuse them across your application.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white">app.<span class="text-yellow-400">route</span>(<span class="text-green-400">'/'</span>, {</div>
+                    <div class="text-white ml-4">template: <span class="text-green-400">'pages/home.html'</span>,</div>
+                    <div class="text-white ml-4">layout: <span class="text-green-400">'layouts/main.html'</span></div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+            
+            <!-- Component System -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">🧩</div>
+                    <h3 class="text-2xl font-bold">Component System</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Reusable components with lifecycle hooks, props, and state management. Build modular, maintainable applications.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white">app.<span class="text-yellow-400">component</span>(<span class="text-green-400">'UserCard'</span>, {</div>
+                    <div class="text-white ml-4">template: <span class="text-blue-400">(props)</span> => <span class="text-green-400">`</span></div>
+                    <div class="text-white ml-8">&lt;div class="card"&gt;</div>
+                    <div class="text-white ml-10">&lt;h3&gt;${props.name}&lt;/h3&gt;</div>
+                    <div class="text-white ml-8">&lt;/div&gt;</div>
+                    <div class="text-white ml-4"><span class="text-green-400">`</span></div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+            
+            <!-- State Management -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">🗃️</div>
+                    <h3 class="text-2xl font-bold">State Management</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Built-in reactive state with Vuex-like API. Manage application state with mutations, actions, and getters.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white"><span class="text-blue-400">const</span> store = app.<span class="text-yellow-400">createStore</span>({</div>
+                    <div class="text-white ml-4">user: <span class="text-orange-400">null</span>,</div>
+                    <div class="text-white ml-4">posts: []</div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Advanced Features -->
+<section class="py-16 velocity-bg-primary">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl font-bold mb-6 text-center gradient-text">Advanced Capabilities</h2>
+            <p class="text-lg velocity-text-secondary text-center max-w-3xl mx-auto">
+                Enterprise-grade features for building production-ready applications.
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Theme System -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">🎨</div>
+                <h3 class="text-xl font-bold mb-3">Theme System</h3>
+                <p class="velocity-text-secondary">Dark/light mode with auto-detection and seamless switching.</p>
+            </div>
+            
+            <!-- Plugin Architecture -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">🔌</div>
+                <h3 class="text-xl font-bold mb-3">Plugin Architecture</h3>
+                <p class="velocity-text-secondary">Extensible plugin system for custom functionality and integrations.</p>
+            </div>
+            
+            <!-- Performance Monitoring -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">📊</div>
+                <h3 class="text-xl font-bold mb-3">Performance Monitoring</h3>
+                <p class="velocity-text-secondary">Web Vitals tracking and performance metrics out of the box.</p>
+            </div>
+            
+            <!-- Internationalization -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">🌍</div>
+                <h3 class="text-xl font-bold mb-3">Internationalization</h3>
+                <p class="velocity-text-secondary">Multi-language support with dynamic locale switching.</p>
+            </div>
+            
+            <!-- Error Boundaries -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">🛡️</div>
+                <h3 class="text-xl font-bold mb-3">Error Boundaries</h3>
+                <p class="velocity-text-secondary">Graceful error handling with custom fallback components.</p>
+            </div>
+            
+            <!-- Accessibility -->
+            <div class="velocity-card p-6 text-center">
+                <div class="text-4xl mb-4">♿</div>
+                <h3 class="text-xl font-bold mb-3">Accessibility</h3>
+                <p class="velocity-text-secondary">ARIA support, focus management, and screen reader compatibility.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Networking Features -->
+<section class="py-16 velocity-bg-secondary">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl font-bold mb-6 text-center gradient-text">Advanced Networking</h2>
+            <p class="text-lg velocity-text-secondary text-center max-w-3xl mx-auto">
+                Powerful networking capabilities for modern web applications.
+            </p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-12">
+            <!-- Request Caching -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">💾</div>
+                    <h3 class="text-2xl font-bold">Request Caching</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Intelligent response caching with TTL support. Improve performance by caching API responses automatically.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        <span>Automatic cache invalidation</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        <span>Configurable TTL per request</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        <span>Memory and localStorage support</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Offline Support -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">📴</div>
+                    <h3 class="text-2xl font-bold">Offline Support</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Queue requests when offline and sync them when connectivity is restored. Perfect for PWAs.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Request queuing</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Automatic sync on reconnect</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Offline status detection</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Request Interceptors -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">🔄</div>
+                    <h3 class="text-2xl font-bold">Request Interceptors</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Transform requests and responses globally. Add authentication, logging, error handling, and more.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white">app.network.<span class="text-yellow-400">addRequestInterceptor</span>(<span class="text-blue-400">(config)</span> => {</div>
+                    <div class="text-white ml-4">config.headers.Authorization = <span class="text-green-400">`Bearer ${token}`</span>;</div>
+                    <div class="text-white ml-4"><span class="text-blue-400">return</span> config;</div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+            
+            <!-- File Operations -->
+            <div class="velocity-card p-8">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl mr-4">📁</div>
+                    <h3 class="text-2xl font-bold">File Operations</h3>
+                </div>
+                <p class="velocity-text-secondary mb-6">
+                    Built-in file upload and download with progress tracking. Handle files effortlessly in your apps.
+                </p>
+                <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-white"><span class="text-blue-400">await</span> app.network.<span class="text-yellow-400">upload</span>(<span class="text-green-400">'/api/upload'</span>, formData, {</div>
+                    <div class="text-white ml-4">onProgress: <span class="text-blue-400">(percent)</span> => <span class="text-yellow-400">console</span>.<span class="text-yellow-400">log</span>(percent)</div>
+                    <div class="text-white">});</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance & Developer Experience -->
+<section class="py-16 velocity-bg-primary">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl font-bold mb-6 text-center gradient-text">Performance & Developer Experience</h2>
+            <p class="text-lg velocity-text-secondary text-center max-w-3xl mx-auto">
+                Built for speed and developer happiness with comprehensive tooling and optimizations.
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="velocity-card p-8">
+                <h3 class="text-2xl font-bold mb-6">🚀 Performance Features</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Zero Dependencies:</strong> No external libraries means faster bundle and startup times.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Web Vitals Tracking:</strong> Automatic Core Web Vitals monitoring for performance insights.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Lazy Loading:</strong> Components and routes load only when needed.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Memory Management:</strong> Efficient cleanup and garbage collection.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="velocity-card p-8">
+                <h3 class="text-2xl font-bold mb-6">🛠️ Developer Tools</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Debug Mode:</strong> Enhanced logging and development tools for easier debugging.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Hot Reloading:</strong> Instant updates during development without losing state.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Component Inspector:</strong> Runtime inspection of components and their state.
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <div>
+                            <strong>Performance Profiler:</strong> Built-in performance monitoring and profiling tools.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 gradient-bg text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Experience VelocityJS?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto text-gray-100">
+            See all these features in action with our interactive demo or start building your next project today.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="/demo" class="velocity-btn bg-white text-purple-600 hover:bg-gray-100 velocity-btn-lg px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all shadow-2xl" data-velocity-link>
+                🧪 Try Interactive Demo
+            </a>
+            <a href="/" class="velocity-btn velocity-btn-outline border-white text-white hover:bg-white hover:text-purple-600 velocity-btn-lg px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all" data-velocity-link>
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+</section> 

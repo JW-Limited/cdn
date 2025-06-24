@@ -1,0 +1,88 @@
+# Robots.txt for JWLimited CDN
+# https://cdn.the-simply-web.com
+
+User-agent: *
+
+# Allow indexing of main pages
+Allow: /
+Allow: /index.html
+Allow: /*.css
+Allow: /*.js
+
+# Block access to API endpoints
+Disallow: /api/
+Disallow: /cdn-cgi/
+
+# Block access to user uploads and private content
+Disallow: /uploads/
+Disallow: /user/
+Disallow: /private/
+
+# Block access to configuration and system files
+Disallow: /.well-known/
+Disallow: /worker/
+Disallow: /config/
+Disallow: /_*
+
+# Block access to authentication endpoints
+Disallow: /auth/
+Disallow: /login/
+Disallow: /register/
+
+# Block access to admin areas
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Allow access to public assets
+Allow: /assets/
+Allow: /public/
+Allow: /_jsdelivery/
+Allow: /_styledelivery/
+
+# Crawl delay to prevent overwhelming the server
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://cdn.the-simply-web.com/sitemap.xml
+
+# Special rules for different bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+# Block aggressive crawlers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# Block AI training bots (optional - remove if you want AI training)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: / 

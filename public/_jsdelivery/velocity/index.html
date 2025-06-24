@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelocityJS - Modern Web Framework</title>
+    <meta name="description" content="Blazing fast, feature-rich web framework with Next.js-like capabilities for vanilla JavaScript">
+    <link rel="stylesheet" href="/assets/velocity.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="/assets/demo.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .dark .glass-effect { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="velocity-bg-primary velocity-text-primary transition-all duration-300">
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" class="fixed  !hidden top-6 right-6 z-50 p-3 rounded-full glass-effect hover:scale-110 transition-all duration-300">
+        <svg id="sun-icon" class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        <svg id="moon-icon" class="w-6 h-6 text-purple-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="velocity-nav fixed w-full top-0 z-40 velocity-bg-primary velocity-text-primary">    
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="nav-brand" data-velocity-link>
+                    <h1 class="text-2xl font-bold gradient-text">VelocityJS</h1>
+                    <span class="velocity-bg-primary text-xs px-2 py-1 rounded-full text-purple-600 font-semibold">v2.0.0</span>
+                </a>
+                <ul class="nav-links hidden md:flex space-x-8">
+                    <li><a href="/" class="velocity-text-primary hover:text-purple-600 transition-colors" data-velocity-link>Home</a></li>
+                    <li><a href="/features" class="velocity-text-primary hover:text-purple-600 transition-colors" data-velocity-link>Features</a></li>
+                    <li><a href="/demo" class="velocity-text-primary hover:text-purple-600 transition-colors" data-velocity-link>Demo</a></li>
+                    <li><a href="/about" class="velocity-text-primary hover:text-purple-600 transition-colors" data-velocity-link>About</a></li>
+                </ul>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/yourusername/velocityjs" class="velocity-btn velocity-btn-outline velocity-btn-sm">
+                        GitHub
+                    </a>
+                    <a href="/demo" class="velocity-btn velocity-btn-primary velocity-btn-sm" data-velocity-link>
+                        Try Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main App Container -->
+    <div id="app" class="pt-12">
+        <!-- Loading indicator will be injected here -->
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="velocity-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 transform -translate-x-full transition-transform duration-300 z-50"></div>
+
+    <script type="module">
+        import { createApp } from './src/velocity.js';
+
+        const app = createApp({
+            debug: false,
+            historyMode: true,
+            enableCache: true,
+            enableOffline: true,
+            logLevel: 'info',
+            theme: 'dark',
+            baseURL: '/',
+        });
+
+        // Theme management
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark');
+            } else {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.body.classList.remove('dark');
+            }
+        }
+
+        // Theme toggle handler
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            app.setTheme(newTheme);
+            updateThemeIcon(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        updateThemeIcon(savedTheme);
+        app.setTheme(savedTheme);
+
+        // Configure routes
+        app.route('/', {
+            fetchHtml: true,
+            template: 'pages/home.html',
+            layout: 'layouts/main.html',
+            title: 'VelocityJS - Modern Web Framework',
+            meta: {
+                description: 'Blazing fast, feature-rich web framework with Next.js-like capabilities'
+            }
+        });
+
+        app.route('/features', {
+            fetchHtml: true,
+            template: 'pages/features.html',
+            layout: 'layouts/main.html',
+            title: 'Features - VelocityJS',
+            meta: {
+                description: 'Discover the powerful features of VelocityJS framework'
+            }
+        });
+
+        app.route('/demo', {
+            fetchHtml: true,
+            template: 'pages/demo.html',
+            layout: 'layouts/main.html',
+            title: 'Interactive Demo - VelocityJS',
+            meta: {
+                description: 'Try VelocityJS features in an interactive demo'
+            }
+        });
+
+        app.route('/about', {
+            fetchHtml: true,
+            template: 'pages/about.html',
+            layout: 'layouts/main.html',
+            title: 'About the Developer - VelocityJS',
+            meta: {
+                description: 'Learn about the developer behind VelocityJS'
+            }
+        });
+
+        // Loading indicators
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const appDiv = document.getElementById('app');
+
+        app.router.on('loading:start', (context) => {
+            loadingIndicator.style.transform = 'translateX(0%)';
+            appDiv.style.opacity = '0.7';
+        });
+
+        app.router.on('loading:end', (context) => {
+            setTimeout(() => {
+                loadingIndicator.style.transform = 'translateX(100%)';
+                appDiv.style.opacity = '1';
+                setTimeout(() => {
+                    loadingIndicator.style.transform = 'translateX(-100%)';
+                }, 300);
+            }, 200);
+
+            
+
+            document.querySelectorAll('nav a[data-velocity-link]').forEach(link => {
+                link.classList.remove('text-purple-600', 'font-semibold');
+                if (link.getAttribute('href') === context.path) {
+                    link.classList.add('text-purple-600', 'font-semibold');
+                }
+            });
+        });
+
+        app.router.on('loading:error', (error) => {
+            loadingIndicator.style.transform = 'translateX(-100%)';
+            appDiv.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center">
+                    <div class="text-center p-8">
+                        <div class="text-6xl mb-4">⚠️</div>
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Loading Error</h2>
+                        <p class="text-gray-600 mb-4">Failed to load: ${error.message}</p>
+                        <p class="text-sm text-gray-500 mb-6">Make sure you're running a local server and all demo files exist.</p>
+                        <button onclick="window.location.reload()" class="velocity-btn velocity-btn-primary">
+                            Reload Page
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Initialize the app
+        try {
+            await app.init();
+            console.log('🚀 VelocityJS Landing Page Ready!');
+        } catch (error) {
+            console.error('Failed to initialize VelocityJS:', error);
+            appDiv.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center">
+                    <div class="text-center p-8">
+                        <div class="text-6xl mb-4">❌</div>
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Initialization Failed</h2>
+                        <p class="text-gray-600 mb-4">${error.message}</p>
+                        <button onclick="window.location.reload()" class="velocity-btn velocity-btn-primary">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mobile menu toggle (basic implementation)
+        const mobileMenuBtn = document.createElement('button');
+        mobileMenuBtn.className = 'md:hidden p-2';
+        mobileMenuBtn.innerHTML = '☰';
+        document.querySelector('.nav-links').parentNode.appendChild(mobileMenuBtn);
+
+        // Expose for debugging
+        window.app = app;
+    </script>
+</body>
+</html>

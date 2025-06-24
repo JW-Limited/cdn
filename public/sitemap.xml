@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- Main Pages -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/index.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Public Asset Libraries -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Velocity Framework Pages -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/index.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/pages/home.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/pages/about.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/pages/features.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/pages/demo.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/pages/preview.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Core JavaScript Libraries -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/core/Application.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/core/JWBase.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/core/Network.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/core/EventEmitter.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Velocity Core Files -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/src/velocity.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/src/core/router.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/src/core/network.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- CSS Libraries -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/assets/velocity.css</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/_styledelivery/third/tagify.mod.css</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Third Party Libraries -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/third_party/dom-purrify/purify.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Public Assets -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/assets/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://cdn.the-simply-web.com/assets/applications/</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <!-- Documentation and README Files -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/README.md</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Layout Templates -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/velocity/layouts/main.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <!-- Service Files -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/service/quality.ts</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <!-- Image Utilities -->
+    <url>
+        <loc>https://cdn.the-simply-web.com/_jsdelivery/vanilla/images/svgRender.js</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+</urlset> 

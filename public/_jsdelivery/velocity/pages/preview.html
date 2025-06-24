@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelocityJS Preview</title>
+    <link rel="stylesheet" href="/assets/velocity.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .preview-container {
+            width: 100%;
+            height: 100%;
+            min-height: calc(100vh - 40px);
+        }
+        
+        .error-display {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .success-display {
+            background: #d1fae5;
+            color: #059669;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #a7f3d0;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="velocity-bg-primary">
+    <div id="preview-container" class="preview-container">
+        <div class="text-center py-20">
+            <div class="text-6xl mb-4">🚀</div>
+            <h2 class="text-2xl font-bold velocity-text-primary mb-4">Ready for Code!</h2>
+            <p class="velocity-text-secondary">Write some VelocityJS code in the editor to see it come to life here.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        let app = null;
+        
+        // Import VelocityJS if available
+        try {
+            const { createApp } = await import('/src/velocity.js');
+            
+            // Create a sandbox app instance
+            app = createApp({
+                debug: true,
+                theme: 'auto',
+                historyMode: false // Disable history mode for iframe
+            });
+            
+            // Register the preview route to avoid errors
+            app.route('/pages/preview', () => {
+                return `<div id="preview-container" class="preview-container">
+        <div class="text-center py-20">
+            <div class="text-6xl mb-4">🚀</div>
+            <h2 class="text-2xl font-bold velocity-text-primary mb-4">Ready for Code!</h2>
+            <p class="velocity-text-secondary">Write some VelocityJS code in the editor to see it come to life here.</p>
+        </div>
+    </div>`;
+            }
+            );
+            
+            // Initialize the app
+            await app.init();
+            
+            console.log('VelocityJS preview environment ready');
+        } catch (error) {
+            console.warn('VelocityJS not available, using mock implementation');
+            
+            // Mock VelocityJS API for demonstrations
+            window.createApp = (config = {}) => ({
+                init: async () => Promise.resolve(),
+                route: (path, handler) => console.log(`Route registered: ${path}`),
+                component: (name, definition) => {
+                    console.log(`Component registered: ${name}`);
+                    return definition.template ? definition.template({}) : `<div>Component: ${name}</div>`;
+                },
+                renderComponent: (name, props = {}) => {
+                    return `<div class="velocity-card p-4"><h3>${name}</h3><pre>${JSON.stringify(props, null, 2)}</pre></div>`;
+                },
+                setTheme: (theme) => {
+                    document.documentElement.setAttribute('data-theme', theme);
+                    console.log(`Theme set to: ${theme}`);
+                },
+                navigate: (path) => console.log(`Navigate to: ${path}`),
+                createStore: (initialState) => ({
+                    state: initialState,
+                    commit: (mutation, payload) => console.log(`Mutation: ${mutation}`, payload),
+                    mutations: new Map()
+                })
+            });
+            
+            app = window.createApp();
+        }
+
+        // Function to execute code safely
+        function executeCode(code) {
+            const container = document.getElementById('preview-container');
+            
+            try {
+                // Clear previous content
+                container.innerHTML = '';
+                
+                // Create execution context
+                const executeInContext = new Function(
+                    'app', 'createApp', 'document', 'console',
+                    `
+                    try {
+                        ${code}
+                    } catch (error) {
+                        throw error;
+                    }
+                    `
+                );
+                
+                // Execute the code
+                const result = executeInContext(app, window.createApp, document, console);
+                
+                // If there's a result and container is still empty, show the result
+                if (result !== undefined && container.innerHTML.trim() === '') {
+                    if (typeof result === 'string') {
+                        container.innerHTML = result;
+                    } else if (typeof result === 'object') {
+                        container.innerHTML = `<pre class="velocity-card p-4 font-mono text-sm overflow-auto">${JSON.stringify(result, null, 2)}</pre>`;
+                    } else {
+                        container.innerHTML = `<div class="velocity-card p-4"><strong>Result:</strong> ${result}</div>`;
+                    }
+                }
+                
+                // If container is still empty, show success message
+                if (container.innerHTML.trim() === '') {
+                    container.innerHTML = `
+                        <div class="success-display">
+                            <strong>✅ Code executed successfully!</strong><br>
+                            Check the browser console for any output.
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="error-display">
+                        <strong>❌ Error:</strong> ${error.message}<br>
+                        <small>${error.stack}</small>
+                    </div>
+                `;
+                console.error('Preview execution error:', error);
+            }
+        }
+        
+        // Listen for messages from parent window
+        window.addEventListener('message', (event) => {
+            if (event.origin !== window.location.origin) return;
+            
+            if (event.data.type === 'EXECUTE_CODE') {
+                executeCode(event.data.code);
+            } else if (event.data.type === 'CLEAR_PREVIEW') {
+                document.getElementById('preview-container').innerHTML = `
+                    <div class="text-center py-20">
+                        <div class="text-6xl mb-4">🚀</div>
+                        <h2 class="text-2xl font-bold velocity-text-primary mb-4">Ready for Code!</h2>
+                        <p class="velocity-text-secondary">Write some VelocityJS code in the editor to see it come to life here.</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Expose executeCode for direct access
+        window.executeCode = executeCode;
+        window.velocityApp = app;
+        
+        // Notify parent that preview is ready
+        window.parent.postMessage({ type: 'PREVIEW_READY' }, '*');
+    </script>
+</body>
+</html>

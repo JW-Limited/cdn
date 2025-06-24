@@ -1,0 +1,350 @@
+<!-- VS Code-inspired Live Code Editor -->
+<div class="vscode-container min-h-screen velocity-bg-primary pt-5">
+    <div class="vscode-workbench flex h-[calc(100vh-102px)]">
+        <!-- Sidebar -->
+        <div class="vscode-sidebar w-60 velocity-bg-primary border-r velocity-border-color flex flex-col">
+            <!-- File Explorer -->
+            <div class="sidebar-content flex-1 overflow-y-auto" id="sidebar-content">
+                <div class="file-explorer p-2">
+                    <div class="file-tree">
+                        <div class="folder-item mb-2">
+                            <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/>
+                                </svg>
+                                <span class="text-sm velocity-text-primary font-medium">examples</span>
+                            </div>
+                            <div class="ml-6 space-y-1">
+                                <div class="file-item example-file active" data-example="hello-world">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">hello-world.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="component">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">user-card.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="theme-toggle">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 2L13.09 8.26L20 9L14 14.74L15.18 21.02L10 17.77L4.82 21.02L6 14.74L0 9L6.91 8.26L10 2Z"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">theme-demo.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="counter">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">counter-app.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="todo-app">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">todo-app.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="api-dashboard">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">api-dashboard.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="chat-app">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-pink-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">chat-app.js</span>
+                                    </div>
+                                </div>
+                                <div class="file-item example-file" data-example="data-viz">
+                                    <div class="flex items-center gap-2 p-2 hover:velocity-bg-secondary rounded cursor-pointer">
+                                        <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                                        </svg>
+                                        <span class="text-sm velocity-text-primary">data-viz.js</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Group -->
+        <div class="vscode-editor-group flex-1 flex flex-col">
+            <!-- Editor Tabs -->
+            <div class="editor-tabs flex items-center velocity-bg-secondary border-b velocity-border-color">
+                <div class="tab active flex items-center gap-2 px-4 py-2 border-r velocity-border-color velocity-bg-primary">
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm" id="active-tab-name">hello-world.js</span>
+                    <button class="tab-close p-1 hover:bg-red-500 hover:text-white rounded text-xs">×</button>
+                </div>
+                <div class="flex-1"></div>
+                <div class="editor-actions flex items-center gap-2 px-4">
+                    <button id="format-code" class="p-1 hover:velocity-bg-primary rounded" title="Format Code (Shift+Alt+F)">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    <button id="run-code" class="flex items-center gap-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                        </svg>
+                        Run
+                    </button>
+                </div>
+            </div>
+
+            <!-- Editor and Preview Split -->
+            <div class="editor-content flex-1 flex">
+                <!-- Code Editor -->
+                <div class="editor-pane flex-1 flex flex-col">
+                    <!-- Breadcrumb -->
+                    <div class="breadcrumb px-4 py-2 text-xs velocity-text-secondary border-b velocity-border-color">
+                        <span>examples</span>
+                        <span class="mx-2">›</span>
+                        <span id="breadcrumb-file">hello-world.js</span>
+                    </div>
+                    
+                    <!-- Editor -->
+                    <div class="editor-container flex-1 relative">
+                        <textarea 
+                            id="code-editor" 
+                            class="w-full h-full p-4 resize-none border-none outline-none font-mono text-sm bg-[#1e1e1e] text-[#d4d4d4]"
+                            placeholder="// Write your VelocityJS code here..."
+                            spellcheck="false"
+                        ></textarea>
+                        
+                        <!-- Line Numbers -->
+                        <div class="line-numbers absolute left-0 top-0 p-4 pointer-events-none text-xs text-gray-500 font-mono leading-relaxed">
+                            <div id="line-numbers-content"></div>
+                        </div>
+                        
+                        <!-- Minimap -->
+                        <div class="minimap absolute right-0 top-0 w-16 h-full velocity-bg-secondary opacity-50 hover:opacity-100 transition-opacity">
+                            <div class="text-xs text-center pt-2 velocity-text-secondary">Map</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vertical Splitter -->
+                <div class="splitter w-1 velocity-bg-secondary cursor-col-resize hover:bg-blue-500 transition-colors"></div>
+
+                <!-- Preview Pane -->
+                <div class="preview-pane flex-1 flex flex-col">
+                    <!-- Preview Header -->
+                    <div class="preview-header flex items-center justify-between p-3 breadcrumb px-4 py-2 text-xs velocity-text-secondary border-b velocity-border-color">
+                        <div class="flex items-center gap-3">
+                            
+                            <span class="">Live Preview</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="refresh-preview" class="p-1 hover:velocity-bg-primary rounded" title="Refresh Preview">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            <button id="copy-code" class="p-1 hover:velocity-bg-primary rounded" title="Copy Code">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/>
+                                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview iframe -->
+                    <div class="preview-container flex-1">
+                        <iframe 
+                            id="preview-frame" 
+                            src="/pages/preview.html" 
+                            class="w-full h-full border-none"
+                            sandbox="allow-scripts allow-same-origin allow-forms"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="vscode-statusbar flex items-center justify-between px-4 py-1 velocity-bg-secondary text-xs velocity-text-secondary border-t velocity-border-color">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>VelocityJS v2.0.0</span>
+            </div>
+            <span id="cursor-position">Ln 1, Col 1</span>
+            <span id="file-encoding">UTF-8</span>
+            <span id="file-type">JavaScript</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div id="execution-time" class="hidden">
+                <span>⚡ Executed in <span id="exec-time">0ms</span></span>
+            </div>
+            <button id="problems-indicator" class="hover:velocity-bg-primary px-2 py-1 rounded">
+                <span>✓ No Problems</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.vscode-container {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    color: var(--velocity-text-primary);
+}
+
+.activity-btn {
+    @apply w-10 h-10 flex items-center justify-center rounded hover:velocity-bg-primary transition-colors velocity-text-secondary;
+}
+
+.activity-btn.active {
+    @apply velocity-text-primary velocity-bg-primary border-l-2 border-blue-500;
+}
+
+.file-item.active {
+    @apply velocity-bg-secondary;
+}
+
+.file-item:hover {
+    @apply velocity-bg-secondary;
+}
+
+.tab {
+    @apply velocity-text-primary cursor-pointer;
+}
+
+.tab:hover {
+    @apply velocity-bg-primary;
+}
+
+.tab.active {
+    @apply border-t-2 border-blue-500;
+}
+
+.editor-container {
+    background: #1e1e1e;
+}
+
+#code-editor {
+    tab-size: 4;
+    line-height: 1.5;
+    padding-left: 60px; /* Space for line numbers */
+    font-family: 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+#code-editor:focus {
+    outline: none;
+}
+
+.line-numbers {
+    width: 50px;
+    text-align: right;
+    user-select: none;
+    border-right: 1px solid #333;
+    background: #1e1e1e;
+}
+
+.splitter:hover {
+    background: #007acc !important;
+}
+
+/* Syntax highlighting simulation */
+.keyword { color: #569cd6; }
+.string { color: #ce9178; }
+.comment { color: #6a9955; }
+.number { color: #b5cea8; }
+.function { color: #dcdcaa; }
+
+/* VS Code scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Command palette styles */
+.command-palette {
+    @apply fixed top-20 left-1/2 transform -translate-x-1/2 w-[600px] velocity-bg-primary border velocity-border-color rounded-lg shadow-2xl z-50;
+}
+
+.command-input {
+    @apply w-full p-4 velocity-bg-primary velocity-text-primary border-none outline-none text-lg;
+}
+
+.command-results {
+    @apply max-h-96 overflow-y-auto;
+}
+
+.command-item {
+    @apply p-3 hover:velocity-bg-secondary cursor-pointer flex items-center gap-3;
+}
+
+.command-item.selected {
+    @apply velocity-bg-secondary;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .vscode-sidebar {
+        width: 250px;
+    }
+    
+    .editor-content {
+        flex-direction: column;
+    }
+    
+    .preview-pane {
+        min-height: 400px;
+    }
+    
+    .minimap {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .vscode-sidebar {
+        position: absolute;
+        left: -320px;
+        z-index: 10;
+        transition: left 0.3s ease;
+    }
+    
+    .vscode-sidebar.open {
+        left: 48px;
+    }
+}
+</style>
