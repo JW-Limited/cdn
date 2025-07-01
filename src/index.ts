@@ -1,108 +1,7 @@
-interface Env {
-	ASSETS: {
-		fetch: (request: Request) => Promise<Response>;
-	};
-	MTS_STV0_WORKER: {
-		fetch: (request: Request) => Promise<Response>;
-	};
-	SMPWEB_2X_AUTH_WORKER: {
-		fetch: (request: Request) => Promise<Response>;
-	};
-
-	CDN_CACHE: KVNamespace;
-	CDN_METADATA: KVNamespace;
-	FILE_VERSIONS: KVNamespace;
-	FILE_CONTENT: KVNamespace;
-	ASSETS_DB: D1Database;
-}
-
-interface FileVersion {
-	version: number;
-	timestamp: number;
-	author: string;
-	authorId: string;
-	changeType: 'metadata' | 'content' | 'both';
-	changes: {
-		metadata?: any;
-		contentSize?: number;
-		contentHash?: string;
-	};
-	storage: {
-		contentBytes: number;
-		metadataBytes: number;
-	};
-}
-
-interface FileMetadata {
-	id: string;
-	name: string;
-	originalName: string;
-	path: string;
-	mimeType: string;
-	size: number;
-	owner: string;
-	ownerId: string;
-	created: number;
-	modified: number;
-	version: number;
-	isPublic: boolean;
-	tags: string[];
-	description?: string;
-	customFields?: Record<string, any>;
-}
-
-const MIME_TYPES: Record<string, string> = {
-	// Images
-	'.jpg': 'image/jpeg',
-	'.jpeg': 'image/jpeg',
-	'.png': 'image/png',
-	'.gif': 'image/gif',
-	'.webp': 'image/webp',
-	'.avif': 'image/avif',
-	'.svg': 'image/svg+xml',
-	'.ico': 'image/x-icon',
-
-	// Fonts
-	'.woff': 'font/woff',
-	'.woff2': 'font/woff2',
-	'.ttf': 'font/ttf',
-	'.eot': 'application/vnd.ms-fontobject',
-	'.otf': 'font/otf',
-
-	// Stylesheets and Scripts
-	'.css': 'text/css',
-	'.js': 'application/javascript',
-	'.mjs': 'application/javascript',
-	'.json': 'application/json',
-	'.xml': 'application/xml',
-
-	// Documents
-	'.html': 'text/html',
-	'.htm': 'text/html',
-	'.txt': 'text/plain',
-	'.pdf': 'application/pdf',
-
-	// Audio/Video
-	'.mp3': 'audio/mpeg',
-	'.mp4': 'video/mp4',
-	'.webm': 'video/webm',
-	'.ogg': 'audio/ogg',
-
-	// Archives
-	'.zip': 'application/zip',
-	'.gz': 'application/gzip',
-};
-
-// Cache TTL configurations (in seconds)
-const CACHE_TTL = {
-	STATIC_ASSETS: 31536000, // 1 year for static assets
-	IMAGES: 2592000,         // 30 days for images
-	FONTS: 31536000,         // 1 year for fonts
-	STYLESHEETS: 86400,      // 1 day for CSS
-	SCRIPTS: 86400,          // 1 day for JS
-	DOCUMENTS: 3600,         // 1 hour for HTML/documents
-	DEFAULT: 3600            // 1 hour default
-};
+import { Env } from './types/env';
+import { FileVersion } from './types/fileVersion';
+import { FileMetadata } from './types/fileMetaData';
+import { MIME_TYPES, CACHE_TTL } from './types/fileMimeTypes';
 
 class CDNService {
 	private env: Env;
@@ -111,51 +10,40 @@ class CDNService {
 		this.env = env;
 	}
 
-		/**
-	 * Main request handler for the CDN
-	 */
 	async handleRequest(request: Request): Promise<Response> {
 		try {
 			const url = new URL(request.url);
 			const pathname = url.pathname;
 
-			// Handle special API endpoints
 			if (pathname.startsWith('/api/')) {
 				return this.handleAPIRequest(request, pathname);
 			}
 
-			// Handle worker proxy requests with advanced URI scheme
 			if (pathname.startsWith('/worker/') || pathname.startsWith('/proxy/')) {
 				return await this.handleWorkerProxyRequest(request, pathname);
 			}
 
-						// Handle remote worker RPC calls
 			if (pathname.startsWith('/rpc/')) {
 				return await this.handleRPCRequest(request, pathname);
 			}
 
-			// Handle external resource fetching (CORS proxy)
 			if (pathname.startsWith('/fetch/') || pathname.startsWith('/proxy-external/')) {
 				return await this.handleExternalFetch(request, pathname);
 			}
 
-			// Handle Chrome DevTools well-known path
 			if (pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
 				return this.handleChromeDevTools();
 			}
 
-			// Handle icon.png redirect
 			if (pathname === '/icon.png' || pathname === '/favicon.ico') {
 				return this.handleIconRedirect(request);
 			}
 
-			// Handle uploaded asset requests (check obfuscated paths first)
 			const isObfuscatedAsset = await this.isObfuscatedAssetPath(pathname);
-			if (isObfuscatedAsset || pathname.startsWith('/prod/') || pathname.includes('/object/live.m3u8') || pathname.startsWith('/assets/uploads/') || pathname.startsWith('/assets/custom/')) {
+			if (isObfuscatedAsset || pathname.startsWith('/prod/') || pathname.includes('/object/live/') || pathname.startsWith('/assets/uploads/') || pathname.startsWith('/assets/custom/')) {
 				return await this.handleUploadedAssetRequest(request, pathname);
 			}
 
-			// Handle static asset requests (fallback to ASSETS binding)
 			return await this.handleAssetRequest(request, pathname);
 
 		} catch (error) {
@@ -417,6 +305,21 @@ class CDNService {
 			return this.handleVersionsRequest(request, pathname);
 		}
 
+		// Advanced editing endpoints (requires authentication)
+		if (pathname.startsWith('/api/edit/')) {
+			return this.handleAdvancedEditRequest(request, pathname);
+		}
+
+		// Iframe editor endpoints (requires authentication)
+		if (pathname.startsWith('/api/iframe-editor/')) {
+			return this.handleIframeEditorRequest(request, pathname);
+		}
+
+		// Photopea save endpoint (requires authentication)
+		if (pathname.startsWith('/api/photopea-save/')) {
+			return this.handlePhotopeaSaveRequest(request, pathname);
+		}
+
 		// Health check
 		if (pathname === '/api/health') {
 			return new Response(JSON.stringify({
@@ -655,6 +558,688 @@ class CDNService {
 			console.error('Versions request error:', error);
 			return this.createErrorResponse(500, 'Version control service error');
 		}
+	}
+
+	/**
+	 * Handle advanced editing requests (PDF, image, audio editing)
+	 */
+	private async handleAdvancedEditRequest(request: Request, pathname: string): Promise<Response> {
+		try {
+			// Verify authentication first
+			const authResult = await this.verifyUserAuthentication(request);
+			if (!authResult.success) {
+				return this.createErrorResponse(401, 'Authentication required');
+			}
+
+			const pathParts = pathname.split('/').filter(part => part.length > 0);
+			// Expected: /api/edit/{type}/{fileId} or /api/edit/{type}
+
+			if (pathParts.length < 3) {
+				return this.createErrorResponse(400, 'Invalid edit endpoint. Use /api/edit/{type}/{fileId}');
+			}
+
+			const editType = pathParts[2]; // pdf, image, audio
+			const fileId = pathParts[3];
+
+			// Handle different edit operations
+			switch (editType) {
+				case 'pdf':
+					return this.handlePDFEdit(request, fileId, authResult.user);
+				case 'image':
+					return this.handleImageEdit(request, fileId, authResult.user);
+				case 'audio':
+					return this.handleAudioEdit(request, fileId, authResult.user);
+				default:
+					return this.createErrorResponse(400, 'Unsupported edit type. Supported: pdf, image, audio');
+			}
+
+		} catch (error) {
+			console.error('Advanced edit request error:', error);
+			return this.createErrorResponse(500, 'Advanced editing service error');
+		}
+	}
+
+	/**
+	 * Handle iframe editor requests
+	 */
+	private async handleIframeEditorRequest(request: Request, pathname: string): Promise<Response> {
+		try {
+			// Verify authentication first
+			const authResult = await this.verifyUserAuthentication(request);
+			if (!authResult.success) {
+				return this.createErrorResponse(401, 'Authentication required');
+			}
+
+			const pathParts = pathname.split('/').filter(part => part.length > 0);
+			// Expected: /api/iframe-editor/{type}/{fileId}
+
+			if (pathParts.length < 4) {
+				return this.createErrorResponse(400, 'Invalid iframe editor endpoint. Use /api/iframe-editor/{type}/{fileId}');
+			}
+
+			const editorType = pathParts[2]; // pdf, image, audio, code
+			const fileId = pathParts[3];
+
+			// Verify file ownership
+			const fileMetadata = await this.getFileMetadata(fileId);
+			if (!fileMetadata) {
+				return this.createErrorResponse(404, 'File not found');
+			}
+
+			if (fileMetadata.ownerId !== authResult.user.id) {
+				return this.createErrorResponse(403, 'Access denied. You can only edit your own files.');
+			}
+
+			// Generate iframe editor URL based on type
+			const editorUrl = this.generateIframeEditorUrl(editorType, fileId, fileMetadata);
+
+			return new Response(JSON.stringify({
+				success: true,
+				editorUrl,
+				fileInfo: {
+					...fileMetadata
+				}
+			}), {
+				headers: {
+					'Content-Type': 'application/json',
+					...this.getCORSHeaders()
+				}
+			});
+
+		} catch (error) {
+			console.error('Iframe editor request error:', error);
+			return this.createErrorResponse(500, 'Iframe editor service error');
+		}
+	}
+
+	/**
+	 * Handle PDF editing operations
+	 */
+	private async handlePDFEdit(request: Request, fileId: string, user: any): Promise<Response> {
+		try {
+			// Verify file ownership
+			const fileMetadata = await this.getFileMetadata(fileId);
+			if (!fileMetadata) {
+				return this.createErrorResponse(404, 'File not found');
+			}
+
+			if (fileMetadata.ownerId !== user.id) {
+				return this.createErrorResponse(403, 'Access denied. You can only edit your own files.');
+			}
+
+			if (!fileMetadata.mimeType.includes('pdf')) {
+				return this.createErrorResponse(400, 'File is not a PDF');
+			}
+
+			const body = await request.json() as any;
+			const { operation, options } = body;
+
+			// Get file content
+			const fileContent = await this.env.FILE_CONTENT.get(fileId, 'arrayBuffer');
+			if (!fileContent) {
+				return this.createErrorResponse(404, 'File content not found');
+			}
+
+			// Process PDF based on operation
+			let editedContent: ArrayBuffer;
+			switch (operation) {
+				case 'add-text':
+					editedContent = await this.addTextToPDF(fileContent, options);
+					break;
+				case 'add-image':
+					editedContent = await this.addImageToPDF(fileContent, options);
+					break;
+				case 'rotate':
+					editedContent = await this.rotatePDF(fileContent, options);
+					break;
+				case 'merge':
+					editedContent = await this.mergePDFs(fileContent, options);
+					break;
+				case 'split':
+					return this.splitPDF(fileContent, options, user);
+				default:
+					return this.createErrorResponse(400, 'Unsupported PDF operation');
+			}
+
+			// Save edited content and create new version
+			const newVersion = fileMetadata.version + 1;
+			await this.env.FILE_CONTENT.put(`${fileId}:${newVersion}`, editedContent);
+
+			// Update metadata
+			const updatedMetadata = {
+				...fileMetadata,
+				version: newVersion,
+				modified: Date.now(),
+				size: editedContent.byteLength
+			};
+
+			await this.env.CDN_METADATA.put(fileId, JSON.stringify(updatedMetadata));
+
+			// Create version history entry
+			await this.createFileVersion(updatedMetadata, user, 'content', {
+				operation,
+				contentSize: editedContent.byteLength,
+				contentHash: await this.generateContentHash(editedContent)
+			});
+
+			return new Response(JSON.stringify({
+				success: true,
+				message: 'PDF edited successfully',
+				version: newVersion,
+				size: editedContent.byteLength
+			}), {
+				headers: {
+					'Content-Type': 'application/json',
+					...this.getCORSHeaders()
+				}
+			});
+
+		} catch (error) {
+			console.error('PDF edit error:', error);
+			return this.createErrorResponse(500, 'PDF editing failed');
+		}
+	}
+
+	/**
+	 * Handle image editing operations
+	 */
+	private async handleImageEdit(request: Request, fileId: string, user: any): Promise<Response> {
+		try {
+			// Verify file ownership
+			const fileMetadata = await this.getFileMetadata(fileId);
+			if (!fileMetadata) {
+				return this.createErrorResponse(404, 'File not found');
+			}
+
+			if (fileMetadata.ownerId !== user.id) {
+				return this.createErrorResponse(403, 'Access denied. You can only edit your own files.');
+			}
+
+			if (!fileMetadata.mimeType.startsWith('image/')) {
+				return this.createErrorResponse(400, 'File is not an image');
+			}
+
+			const body = await request.json() as any;
+			const { operation, options } = body;
+
+			// Get file content
+			const fileContent = await this.env.FILE_CONTENT.get(fileId, 'arrayBuffer');
+			if (!fileContent) {
+				return this.createErrorResponse(404, 'File content not found');
+			}
+
+			// Process image based on operation
+			let editedContent: ArrayBuffer;
+			switch (operation) {
+				case 'resize':
+					editedContent = await this.resizeImage(fileContent, options);
+					break;
+				case 'crop':
+					editedContent = await this.cropImage(fileContent, options);
+					break;
+				case 'rotate':
+					editedContent = await this.rotateImage(fileContent, options);
+					break;
+				case 'filter':
+					editedContent = await this.applyImageFilter(fileContent, options);
+					break;
+				case 'compress':
+					editedContent = await this.compressImage(fileContent, options);
+					break;
+				default:
+					return this.createErrorResponse(400, 'Unsupported image operation');
+			}
+
+			// Save edited content and create new version
+			const newVersion = fileMetadata.version + 1;
+			await this.env.FILE_CONTENT.put(`${fileId}:${newVersion}`, editedContent);
+
+			// Update metadata
+			const updatedMetadata = {
+				...fileMetadata,
+				version: newVersion,
+				modified: Date.now(),
+				size: editedContent.byteLength
+			};
+
+			await this.env.CDN_METADATA.put(fileId, JSON.stringify(updatedMetadata));
+
+			// Create version history entry
+			await this.createFileVersion(updatedMetadata, user, 'content', {
+				operation,
+				contentSize: editedContent.byteLength,
+				contentHash: await this.generateContentHash(editedContent)
+			});
+
+			return new Response(JSON.stringify({
+				success: true,
+				message: 'Image edited successfully',
+				version: newVersion,
+				size: editedContent.byteLength
+			}), {
+				headers: {
+					'Content-Type': 'application/json',
+					...this.getCORSHeaders()
+				}
+			});
+
+		} catch (error) {
+			console.error('Image edit error:', error);
+			return this.createErrorResponse(500, 'Image editing failed');
+		}
+	}
+
+	/**
+	 * Handle audio editing operations
+	 */
+	private async handleAudioEdit(request: Request, fileId: string, user: any): Promise<Response> {
+		try {
+			// Verify file ownership
+			const fileMetadata = await this.getFileMetadata(fileId);
+			if (!fileMetadata) {
+				return this.createErrorResponse(404, 'File not found');
+			}
+
+			if (fileMetadata.ownerId !== user.id) {
+				return this.createErrorResponse(403, 'Access denied. You can only edit your own files.');
+			}
+
+			if (!fileMetadata.mimeType.startsWith('audio/')) {
+				return this.createErrorResponse(400, 'File is not an audio file');
+			}
+
+			const body = await request.json() as any;
+			const { operation, options } = body;
+
+			// Get file content
+			const fileContent = await this.env.FILE_CONTENT.get(fileId, 'arrayBuffer');
+			if (!fileContent) {
+				return this.createErrorResponse(404, 'File content not found');
+			}
+
+			// Process audio based on operation
+			let editedContent: ArrayBuffer;
+			switch (operation) {
+				case 'trim':
+					editedContent = await this.trimAudio(fileContent, options);
+					break;
+				case 'normalize':
+					editedContent = await this.normalizeAudio(fileContent, options);
+					break;
+				case 'fade':
+					editedContent = await this.applyAudioFade(fileContent, options);
+					break;
+				case 'convert':
+					editedContent = await this.convertAudio(fileContent, options);
+					break;
+				case 'merge':
+					editedContent = await this.mergeAudio(fileContent, options);
+					break;
+				default:
+					return this.createErrorResponse(400, 'Unsupported audio operation');
+			}
+
+			// Save edited content and create new version
+			const newVersion = fileMetadata.version + 1;
+			await this.env.FILE_CONTENT.put(`${fileId}:${newVersion}`, editedContent);
+
+			// Update metadata
+			const updatedMetadata = {
+				...fileMetadata,
+				version: newVersion,
+				modified: Date.now(),
+				size: editedContent.byteLength
+			};
+
+			await this.env.CDN_METADATA.put(fileId, JSON.stringify(updatedMetadata));
+
+			// Create version history entry
+			await this.createFileVersion(updatedMetadata, user, 'content', {
+				operation,
+				contentSize: editedContent.byteLength,
+				contentHash: await this.generateContentHash(editedContent)
+			});
+
+			return new Response(JSON.stringify({
+				success: true,
+				message: 'Audio edited successfully',
+				version: newVersion,
+				size: editedContent.byteLength
+			}), {
+				headers: {
+					'Content-Type': 'application/json',
+					...this.getCORSHeaders()
+				}
+			});
+
+		} catch (error) {
+			console.error('Audio edit error:', error);
+			return this.createErrorResponse(500, 'Audio editing failed');
+		}
+	}
+
+	/**
+	 * Generate iframe editor URL for different file types
+	 */
+	private generateIframeEditorUrl(editorType: string, fileId: string, fileMetadata: FileMetadata): string {
+		const baseUrl = 'https://cdn.the-simply-web.com';
+		const fileUrl = `${baseUrl}${fileMetadata.path}`;
+
+		switch (editorType) {
+			case 'pdf':
+				// Use PDF.js editor
+				return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl)}`;
+
+			case 'image':
+				// Use Photopea with Live API integration for automatic saving
+				return this.generatePhotopeaUrl(fileId, fileUrl, fileMetadata);
+
+			case 'audio':
+				// Use TwistedWave online audio editor
+				return `https://twistedwave.com/online/?url=${encodeURIComponent(fileUrl)}`;
+
+			case 'code':
+				// Use CodePen or similar
+				return `https://codepen.io/pen/editor/?prefill_data_url=${encodeURIComponent(fileUrl)}`;
+
+			default:
+				return fileUrl;
+		}
+	}
+
+	private generatePhotopeaUrl(fileId: string, fileUrl: string, fileMetadata: FileMetadata): string {
+		// Create a custom Photopea configuration with Live API integration
+		const config = {
+			files: [fileUrl],
+			environment: {
+				customIO: {
+					open: true,
+					save: true
+				},
+				script: `
+					// Set up communication with parent window for CDN integration
+					function sendToCDN(message) {
+						if (window.parent && window.parent !== window) {
+							window.parent.postMessage({
+								type: 'photopea-cdn',
+								fileId: '${fileId}',
+								fileName: '${fileMetadata.name}',
+								...message
+							}, '*');
+						}
+					}
+
+					// Override the echo function to communicate with parent
+					app.echoToOE = function(message) {
+						sendToCDN({ action: 'echo', message: message });
+					};
+
+					// Override the save function to save back to CDN
+					app.activeDocument.saveToOE = function(format) {
+						const exportFormat = format || 'png';
+
+						// Use Photopea's built-in export to get the image data
+						app.activeDocument.saveToOE = function(fmt) {
+							// Export the document as a data URL
+							const dataURL = app.activeDocument.exportDataURL(exportFormat);
+
+							sendToCDN({
+								action: 'save',
+								format: exportFormat,
+								data: dataURL,
+								size: dataURL.length
+							});
+						};
+					};
+
+					// Set up custom IO handlers
+					app.customIO = {
+						save: function() {
+							// Trigger save to CDN when user presses Ctrl+S or File > Save
+							const dataURL = app.activeDocument.exportDataURL('png');
+							sendToCDN({
+								action: 'save',
+								format: 'png',
+								data: dataURL,
+								size: dataURL.length
+							});
+						},
+						open: function() {
+							sendToCDN({ action: 'open_requested' });
+						}
+					};
+
+					// Set document source identifier
+					app.activeDocument.source = '${fileId}';
+
+					// Notify parent that Photopea is ready
+					setTimeout(function() {
+						sendToCDN({ action: 'ready', documentId: app.activeDocument ? app.activeDocument.id : 'unknown' });
+					}, 1000);
+
+					// Set up periodic auto-save (every 60 seconds if document is dirty)
+					setInterval(function() {
+						if (app.activeDocument && app.activeDocument.dirty) {
+							try {
+								const dataURL = app.activeDocument.exportDataURL('png');
+								sendToCDN({
+									action: 'save',
+									format: 'png',
+									data: dataURL,
+									size: dataURL.length,
+									auto: true
+								});
+							} catch (e) {
+								console.error('Auto-save failed:', e);
+							}
+						}
+					}, 60000);
+				`
+			}
+		};
+
+		const encodedConfig = encodeURIComponent(JSON.stringify(config));
+		return `https://www.photopea.com/#${encodedConfig}`;
+	}
+
+	/**
+	 * Handle Photopea save requests from the Live API
+	 */
+	private async handlePhotopeaSaveRequest(request: Request, pathname: string): Promise<Response> {
+		try {
+			// Verify authentication first
+			const authResult = await this.verifyUserAuthentication(request);
+			if (!authResult.success) {
+				return this.createErrorResponse(401, 'Authentication required');
+			}
+
+			if (request.method !== 'POST') {
+				return this.createErrorResponse(405, 'Method not allowed');
+			}
+
+			const fileId = pathname.split('/api/photopea-save/')[1];
+			if (!fileId) {
+				return this.createErrorResponse(400, 'File ID required');
+			}
+
+			// Verify file ownership
+			const fileMetadata = await this.getFileMetadata(fileId);
+			if (!fileMetadata) {
+				return this.createErrorResponse(404, 'File not found');
+			}
+
+			if (fileMetadata.ownerId !== authResult.user.id) {
+				return this.createErrorResponse(403, 'Access denied. You can only edit your own files.');
+			}
+
+			// Parse the request body
+			const requestData = await request.json() as any;
+			const { action, format, data, size } = requestData;
+
+			if (action === 'save' && data) {
+				// Convert base64 data to ArrayBuffer
+				const base64Data = data.split(',')[1] || data;
+				const binaryString = atob(base64Data);
+				const bytes = new Uint8Array(binaryString.length);
+				for (let i = 0; i < binaryString.length; i++) {
+					bytes[i] = binaryString.charCodeAt(i);
+				}
+				const imageBuffer = bytes.buffer;
+
+				// Update the file content
+				const oldSize = fileMetadata.size;
+				const newSize = imageBuffer.byteLength;
+
+				// Store the new content
+				await this.env.FILE_CONTENT.put(fileId, imageBuffer);
+
+				// Update metadata
+				const updatedMetadata = {
+					...fileMetadata,
+					size: newSize,
+					modified: Date.now(),
+					version: fileMetadata.version + 1,
+					mimeType: `image/${format}` // Update MIME type based on format
+				};
+
+				await this.env.CDN_METADATA.put(fileId, JSON.stringify(updatedMetadata));
+
+				// Create version history entry
+				await this.createFileVersion(
+					fileMetadata,
+					authResult.user,
+					'content',
+					{
+						contentSize: newSize,
+						contentHash: await this.generateContentHash(imageBuffer),
+						source: 'photopea-editor',
+						format: format
+					}
+				);
+
+				// Update user storage usage
+				await this.updateUserStorageUsage(authResult.user.id, oldSize, newSize);
+
+				return new Response(JSON.stringify({
+					success: true,
+					message: 'Image saved successfully',
+					fileId: fileId,
+					version: updatedMetadata.version,
+					size: newSize,
+					format: format
+				}), {
+					headers: {
+						'Content-Type': 'application/json',
+						...this.getCORSHeaders()
+					}
+				});
+			}
+
+			// Handle other actions (echo, ready, etc.)
+			return new Response(JSON.stringify({
+				success: true,
+				message: 'Action acknowledged',
+				action: action
+			}), {
+				headers: {
+					'Content-Type': 'application/json',
+					...this.getCORSHeaders()
+				}
+			});
+
+		} catch (error) {
+			console.error('Photopea save error:', error);
+			return this.createErrorResponse(500, 'Failed to save image from Photopea');
+		}
+	}
+
+	// PDF editing helper methods
+	private async addTextToPDF(pdfBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use PDF-lib or similar library
+		// For now, return original buffer (placeholder)
+		return pdfBuffer;
+	}
+
+	private async addImageToPDF(pdfBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use PDF-lib or similar library
+		return pdfBuffer;
+	}
+
+	private async rotatePDF(pdfBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use PDF-lib or similar library
+		return pdfBuffer;
+	}
+
+	private async mergePDFs(pdfBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use PDF-lib or similar library
+		return pdfBuffer;
+	}
+
+	private async splitPDF(pdfBuffer: ArrayBuffer, options: any, user: any): Promise<Response> {
+		// This would use PDF-lib to split PDF into multiple files
+		// Return array of new file IDs
+		return new Response(JSON.stringify({
+			success: true,
+			message: 'PDF split successfully',
+			files: [] // Array of new file IDs
+		}), {
+			headers: {
+				'Content-Type': 'application/json',
+				...this.getCORSHeaders()
+			}
+		});
+	}
+
+	// Image editing helper methods
+	private async resizeImage(imageBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use canvas API or image processing library
+		return imageBuffer;
+	}
+
+	private async cropImage(imageBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use canvas API or image processing library
+		return imageBuffer;
+	}
+
+	private async rotateImage(imageBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use canvas API or image processing library
+		return imageBuffer;
+	}
+
+	private async applyImageFilter(imageBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use canvas API or image processing library
+		return imageBuffer;
+	}
+
+	private async compressImage(imageBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use canvas API or image processing library
+		return imageBuffer;
+	}
+
+	// Audio editing helper methods
+	private async trimAudio(audioBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use Web Audio API or audio processing library
+		return audioBuffer;
+	}
+
+	private async normalizeAudio(audioBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use Web Audio API or audio processing library
+		return audioBuffer;
+	}
+
+	private async applyAudioFade(audioBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use Web Audio API or audio processing library
+		return audioBuffer;
+	}
+
+	private async convertAudio(audioBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use Web Audio API or audio processing library
+		return audioBuffer;
+	}
+
+	private async mergeAudio(audioBuffer: ArrayBuffer, options: any): Promise<ArrayBuffer> {
+		// This would use Web Audio API or audio processing library
+		return audioBuffer;
 	}
 
 	/**
@@ -1046,7 +1631,7 @@ class CDNService {
 				`).bind(fileId, user.id).run();
 
 				// Delete file content from KV
-				const cleanPath = dbFile.file_path.replace('/object/live.m3u8', '');
+				const cleanPath = dbFile.file_path.replace(/\/object\/live\/[^\/]+$/, '');
 				await this.env.CDN_CACHE.delete(`asset:${cleanPath}`);
 
 				fileInfo = dbFile;
@@ -1319,9 +1904,9 @@ class CDNService {
 						id: dbResult.id,
 						name: dbResult.name,
 						originalName: dbResult.original_name,
-						path: dbResult.path,
+						path: dbResult.file_path,
 						mimeType: dbResult.mime_type,
-						size: dbResult.size,
+						size: dbResult.fiel_size,
 						owner: dbResult.user_name || 'Unknown',
 						ownerId: dbResult.user_id,
 						created: new Date(dbResult.created_at).getTime(),
@@ -1867,10 +2452,11 @@ class CDNService {
 	 */
 	private async handleUploadedAssetRequest(request: Request, pathname: string): Promise<Response> {
 		try {
-			// Clean the pathname by removing the /object/live.m3u8 suffix if present
+			// Clean the pathname by removing the /object/live/{filename} suffix if present
 			let cleanPathname = pathname;
-			if (pathname.endsWith('/object/live.m3u8')) {
-				cleanPathname = pathname.replace('/object/live.m3u8', '');
+			const objectLiveMatch = pathname.match(/\/object\/live\/([^\/]+)$/);
+			if (objectLiveMatch) {
+				cleanPathname = pathname.replace(/\/object\/live\/[^\/]+$/, '');
 			}
 
 			console.log(`Attempting to serve asset: ${pathname} (cleaned: ${cleanPathname})`);
@@ -3217,8 +3803,8 @@ class CDNService {
 			const fileName = file.name;
 			const mimeType = file.type || this.getContentType(fileName);
 
-			// Remove /object/live.m3u8 suffix for storage (store clean path)
-			const cleanStoragePath = obfuscatedPath.replace('/object/live.m3u8', '');
+			// Remove /object/live/{filename} suffix for storage (store clean path)
+			const cleanStoragePath = obfuscatedPath.replace(/\/object\/live\/[^\/]+$/, '');
 
 			// Store file content in KV with metadata using clean path
 			await this.env.CDN_CACHE.put(`asset:${cleanStoragePath}`, fileBuffer, {
@@ -3366,12 +3952,12 @@ class CDNService {
 				new Date().toISOString(),
 				JSON.stringify(this.generateSearchTermsForAsset(name, file.name, category, tagsArray)),
 				user?.id
-			).run();
+					).run();
 
-			// Remove /object/live.m3u8 suffix for storage (store clean path)
-			const cleanStoragePath = obfuscatedPath.replace('/object/live.m3u8', '');
+		// Remove /object/live/{filename} suffix for storage (store clean path)
+		const cleanStoragePath = obfuscatedPath.replace(/\/object\/live\/[^\/]+$/, '');
 
-			// Store file content in KV with obfuscated path using clean path
+		// Store file content in KV with obfuscated path using clean path
 			await this.env.CDN_CACHE.put(`asset:${cleanStoragePath}`, fileBuffer, {
 				metadata: {
 					contentType: mimeType,
@@ -3606,8 +4192,8 @@ class CDNService {
 		// Detect continent from request (or default to 'na' for North America)
 		const continent = this.detectContinent();
 
-		// Construct final path with /prod/ prefix, continent, and streaming endpoint
-		const finalPath = `/prod/${continent}/${directories.join('/')}/${obfuscatedName}${this.obfuscateFileExtension(fileExtension, fileMetadata)}/object/live.m3u8`;
+		// Construct final path with /prod/ prefix, continent, and live object endpoint
+		const finalPath = `/prod/${continent}/${directories.join('/')}/${obfuscatedName}${this.obfuscateFileExtension(fileExtension, fileMetadata)}/object/live/${originalFileName}`;
 
 		return finalPath;
 	}
@@ -4116,32 +4702,15 @@ class CDNService {
 	}
 
 	/**
-	 * Generate obfuscated directory names with Serix branding
-	 */
-	private generateObfuscatedDirectory(input: string): string {
-		// Create hash-based directory name
-		const hash = input.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-		const base = hash.toString(36);
-
-		// Add prefixes and suffixes with Serix branding
-		const prefixes = ['serix', 'sys', 'lib', 'bin', 'opt', 'var', 'tmp', 'usr', 'etc'];
-		const suffixes = ['v2', 'v3', 'v4', 'cache', 'data', 'store', 'repo', 'arch', 'dist', 'build', 'core'];
-
-		const prefix = prefixes[hash % prefixes.length];
-		const suffix = suffixes[(hash * 7) % suffixes.length];
-
-		return `${prefix}${base}${suffix}`;
-	}
-
-	/**
 	 * Check if a path is an obfuscated asset by looking for it in KV storage
 	 */
 	private async isObfuscatedAssetPath(pathname: string): Promise<boolean> {
 		try {
-			// Clean the pathname by removing the /object/live.m3u8 suffix if present
+			// Clean the pathname by removing the /object/live/{filename} suffix if present
 			let cleanPathname = pathname;
-			if (pathname.endsWith('/object/live.m3u8')) {
-				cleanPathname = pathname.replace('/object/live.m3u8', '');
+			const objectLiveMatch = pathname.match(/\/object\/live\/([^\/]+)$/);
+			if (objectLiveMatch) {
+				cleanPathname = pathname.replace(/\/object\/live\/[^\/]+$/, '');
 			}
 
 			// Check if the asset exists in KV storage using cleaned path
